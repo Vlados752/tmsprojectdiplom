@@ -1,0 +1,28 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: telegram
+  group_wait: 1s
+  group_interval: 10s
+  repeat_interval: 1h
+
+receivers:
+  - name: telegram
+    telegram_configs:
+      - bot_token: "{{ telegram_bot_token }}"
+        chat_id: {{ telegram_chat_id }}
+        send_resolved: true
+        message: |
+          {{ '{{ range .Alerts }}' }}
+          {{ '{{ if eq .Status "firing" }}' }}
+          🚨 *ALERT:* {{ '{{ .Labels.alertname }}' }}
+          *Summary:* {{ '{{ .Annotations.summary }}' }}
+          *Instance:* {{ '{{ .Labels.instance }}' }}
+          *Severity:* {{ '{{ .Labels.severity }}' }}
+          *Description:* {{ '{{ .Annotations.description }}' }}
+          *Value:* {{ '{{ .Annotations.value }}' }}
+          {{ '{{ else }}' }}
+          ✅ *RESOLVED:* {{ '{{ .Labels.alertname }}' }} - {{ '{{ .Annotations.summary }}' }}
+          {{ '{{ end }}' }}
+          {{ '{{ end }}' }}

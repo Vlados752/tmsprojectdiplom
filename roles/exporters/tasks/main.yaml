@@ -1,0 +1,43 @@
+---
+# tasks file for exporters
+
+- name: Create directories
+  file:
+    path: "/data/node-exporter/{{ item }}"
+    state: directory
+    owner: root
+    mode: 0755
+  loop:
+    - configs
+    - data
+  become: true
+
+- name: Create systemd unit for node-exporter (Docker-based, universal)
+  copy:
+    dest: /etc/systemd/system/node-exporter.service
+    content: |
+      [Unit]
+      Description=Node Exporter (Docker)
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/bin/docker run --rm --net="host" \
+        -v /proc:/host/proc:ro \
+        -v /sys:/host/sys:ro \
+        --name=node-exporter \
+        prom/node-exporter
+
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+  become: true
+
+- name: Reload systemd and start node-exporter
+  systemd:
+    daemon_reload: true
+    name: node-exporter
+    enabled: true
+    state: restarted
+  become: true
+

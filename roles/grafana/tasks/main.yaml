@@ -1,0 +1,68 @@
+---
+# tasks file for grafana
+# roles/grafana/tasks/main.yml
+- name: Create directories
+  file:
+    path: "/data/grafana/{{ item }}"
+    state: directory
+  loop:
+    - configs
+    - data
+
+- name: Create directories for provisioning
+  file:
+    path: "/data/grafana/configs/{{ item }}"
+    state: directory
+  loop:
+    - datasources
+    - dashboards
+
+- name: Upload datasource config
+  template:
+    src: datasource.yml.j2
+    dest: /data/grafana/configs/datasources/datasource.yml
+
+- name: Upload dashboard config
+  copy:
+    src: node-exporter-dashboard.json
+    dest: /data/grafana/configs/dashboards/node-exporter-dashboard.json
+
+- name: Upload dashboards provisioning config
+  copy:
+    src: dashboards.yml
+    dest: /data/grafana/configs/dashboards/dashboards.yml
+
+- name: Create systemd unit
+  copy:
+    dest: /etc/systemd/system/grafana.service
+    content: |
+      [Unit]
+      Description=Grafana
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/bin/docker run --rm \
+        -p 3000:3000 \
+        -v /data/grafana/data:/var/lib/grafana \
+        -v /data/grafana/configs:/etc/grafana/provisioning \
+        --name grafana \
+        grafana/grafana
+
+      Restart=no
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Ensure grafana data directory has correct ownership
+  ansible.builtin.file:
+    path: /data/grafana/data
+    owner: 472
+    group: 472
+    recurse: yes
+
+- name: Reload and enable grafana
+  systemd:
+    daemon_reload: true
+    name: grafana
+    enabled: true
+    state: started

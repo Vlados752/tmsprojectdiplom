@@ -1,0 +1,57 @@
+---
+# tasks file for prometheus
+# roles/prometheus/tasks/main.yml
+- name: Create Docker network for monitoring
+  community.docker.docker_network:
+    name: monitoring
+    state: present
+- name: Create directories
+  file:
+    path: "/data/prometheus/{{ item }}"
+    state: directory
+    owner: root
+    mode: 0777
+  loop:
+    - configs
+    - data
+
+- name: Upload prometheus.yml
+  template:
+    src: prometheus.yml.j2
+    dest: /data/prometheus/configs/prometheus.yml
+
+- name: Upload alert rules
+  copy:
+    src: alert.rules.yml
+    dest: /data/prometheus/configs/alert.rules.yml
+
+- name: Create systemd unit
+  copy:
+    dest: /etc/systemd/system/prometheus.service
+    content: |
+      [Unit]
+      Description=Prometheus
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/bin/docker run --rm \
+        --network monitoring \
+        -p 9090:9090 \
+        -v /data/prometheus/configs:/etc/prometheus \
+        -v /data/prometheus/data:/prometheus \
+        --name prometheus \
+        prom/prometheus \
+        --config.file=/etc/prometheus/prometheus.yml \
+        --storage.tsdb.path=/prometheus
+
+      Restart=no
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload and enable prometheus
+  systemd:
+    daemon_reload: true
+    name: prometheus
+    enabled: true
+    state: started

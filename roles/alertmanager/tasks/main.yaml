@@ -1,0 +1,48 @@
+---
+# tasks file for alertmanager
+# roles/alertmanager/tasks/main.yml
+- name: Create directories
+  file:
+    path: "/data/alertmanager/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+  loop:
+    - configs
+    - data
+
+- name: Upload alertmanager config
+  template:
+    src: alertmanager.yml.j2
+    dest: /data/alertmanager/configs/alertmanager.yml
+
+- name: Create systemd unit
+  copy:
+    dest: /etc/systemd/system/alertmanager.service
+    content: |
+      [Unit]
+      Description=Alertmanager
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/bin/docker run --rm \
+        --network monitoring \
+        -p 9093:9093 \
+        -v /data/alertmanager/configs:/etc/alertmanager \
+        -v /data/alertmanager/data:/alertmanager \
+        --name alertmanager \
+        prom/alertmanager:v0.28.1 \
+        --config.file=/etc/alertmanager/alertmanager.yml
+
+      Restart=no
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload and enable alertmanager
+  systemd:
+    daemon_reload: true
+    name: alertmanager
+    enabled: true
+    state: started

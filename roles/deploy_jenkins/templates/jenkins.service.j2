@@ -1,0 +1,19 @@
+[Unit]
+Description=Jenkins Docker Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm \
+  --name jenkins \
+  --group-add {{ docker_group_gid }} \
+  -p {{ jenkins_port_http }}:8080 \
+  -p {{ jenkins_port_agent }}:50000 \
+  -v {{ jenkins_dest_dir }}/jenkins:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  {{ jenkins_custom_image }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

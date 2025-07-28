@@ -1,0 +1,17 @@
+---
+- hosts: target
+  become: false  # Явно отключаем elevate
+  roles:
+    - deploy_jenkins
+
+- hosts: target
+  become: true  # Включаем root-доступ
+  roles:
+    - prometheus
+    - alertmanager
+    - grafana
+
+- hosts: target:source
+  become: true
+  roles:
+    - exporters
