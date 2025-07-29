@@ -34,7 +34,7 @@
 
 ## ⚙️ Что под капотом
 
-- **2 Linux-хоста (Ubuntu 24.04.01)**:
+- **2 Linux-хосты (Ubuntu 24.04.01)**:
   - **Хост 1**: Ansible, Docker
   - **Хост 2**: Docker, Jenkins
   - **Хост 3**: Alermanager,Prometheus, Grafana
