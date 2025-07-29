@@ -21,17 +21,18 @@
 
 | Назначение | Репозиторий |
 |------------|-------------|
-| Ansible-автоматизация и конфигурация Jenkins | [Final-project-TMS-school](https://github.com/vladyurik/Final-project-TMS-school/tree/main/roles) |
-| Исходный код приложения и Jenkins pipeline | [app-Diplom](https://github.com/vladyurik/app-Diplom/tree/main) |
+| Ansible-автоматизация и конфигурация Jenkins | [Final-project-TMS-school](https://github.com/Vlados752/tmsprojectdiplom/tree/main/roles) |
+| Исходный код приложения и Jenkins pipeline | [app-Diplom](https://github.com/Vlados752/app_tms/tree/main) |
 
 ---
 
 ## ⚙️ Инфраструктура
 
-- **2 Linux-хоста (Ubuntu 22.04)**:
+- **2 Linux-хоста (Ubuntu 24.04.01)**:
   - **Хост 1**: Ansible, Docker
-  - **Хост 2**: Docker
-- Связь по SSH между хостами (из первого ко второму)
+  - **Хост 2**: Docker, Jenkins
+  - **Хост 3**: Alermanager,Prometheus, Grafana
+- Связь по SSH между хостами (из первого ко второму и к третьему)
 - Минимальные системные требования: 2 vCPU, 2 ГБ RAM на каждом хосте
 
 ---
@@ -41,7 +42,7 @@
 1. Клонируйте репозиторий с Ansible-ролями:
 
    ```bash
-   git clone https://github.com/vladyurik/Final-project-TMS-school.git
+   git clone https://github.com/Vlados752/tmsprojectdiplom.git
    ```
 
 2. Настройте инвентаризацию и переменные:
@@ -65,7 +66,7 @@
 
 1. Откройте браузер по адресу `http://<IP>:8080` и авторизуйтесь в Jenkins
 2. Запустите Jenkins pipeline:
-   - Пайплайн скачивает [исходный код приложения (Flask-калькулятор)](https://github.com/vladyurik/app-Diplom)
+   - Пайплайн скачивает [исходный код приложения (Flask-калькулятор)](https://github.com/Vlados752/app_tms)
    - Проверяет код линтером `flake8`
    - Собирает Docker-образ
    - Выполняет unit-тесты
@@ -76,7 +77,7 @@
 
 ![Pipeline](2.png)
 
-**Доступное приложение "Калькулятор":**
+**Доступное приложение "Диксриминант":**
 
 ![Calculator](3.png)
 
@@ -126,7 +127,7 @@ ssh user@host2
 
 ## 📮 Контакты
 
-Разработчик: **Юревич Владислав**  
-📧 Email: [vladik.yurevch@gmail.com](mailto:vladik.yurevch@gmail.com)
+Разработчик: **Маслов Владислав*  
+📧 Email: [vladi4ej@gmail.com](mailto:vladi4ej@gmail.com)
 
 ---
