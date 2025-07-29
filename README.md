@@ -21,8 +21,8 @@
 
 | Назначение | Репозиторий |
 |------------|-------------|
-| Ansible-автоматизация и конфигурация Jenkins | [Final-project-TMS-school](https://github.com/Vlados752/tmsprojectdiplom/tree/main/roles) |
-| Исходный код приложения и Jenkins pipeline | [app-Diplom](https://github.com/Vlados752/app_tms/tree/main) |
+| Ansible-автоматизация и конфигурация Jenkins | [tmsprojectdiplom](https://github.com/Vlados752/tmsprojectdiplom/tree/main/roles) |
+| Исходный код приложения и Jenkins pipeline | [app_tmsm](https://github.com/Vlados752/app_tms/tree/main) |
 
 ---
 
