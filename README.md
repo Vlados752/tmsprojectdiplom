@@ -127,7 +127,7 @@ ssh user@host2
 
 ## 📮 Контакты
 
-Разработчик: **Маслов Владислав*  
+Разработчик: **Маслов Владислав**
 📧 Email: [vladi4ej@gmail.com](mailto:vladi4ej@gmail.com)
 
 ---
