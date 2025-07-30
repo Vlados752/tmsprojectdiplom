@@ -36,8 +36,7 @@
 
 - **2 Linux-хосты (Ubuntu 24.04.01)**:
   - **Хост 1**: Ansible, Docker
-  - **Хост 2**: Docker, Jenkins
-  - **Хост 3**: Alermanager,Prometheus, Grafana
+  - **Хост 2**: Docker, Jenkins,Alermanager,Prometheus, Grafana
 - Связь по SSH между хостами (из первого ко второму и к третьему)
 - Минимальные системные требования: 2 vCPU, 2 ГБ RAM на каждом хосте
 
