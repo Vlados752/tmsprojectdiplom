@@ -1,0 +1,90 @@
+---
+- name: Создаем директорию для Jenkins данных
+  become: yes
+  file:
+    path: "{{ jenkins_dest_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Копируем архив Jenkins с control-ноды
+  ansible.builtin.copy:
+    src: "~/jenkines.tar.gz"  # Абсолютный путь к файлу на control-ноде
+    dest: "/tmp/jenkines.tar.gz"
+    owner: root
+    group: root
+    mode: '0644'
+    remote_src: no  # Ключевой параметр - копируем с control-ноды
+  become: yes
+  when:
+    - ansible_play_hosts[0] == inventory_hostname  # Опционально: выполнять только на первом хосте   
+
+      #- name: Скачать архив Jenkins
+      #get_url:
+      # url: "https://github.com/vladyurik/Final-project-TMS-school/releases/download/v1.0.0/jenkins-setup.tar.gz"
+      #dest: /tmp/jenkins-setup.tar.gz
+
+- name: Распаковать Jenkins
+  unarchive:
+    src: /tmp/jenkines.tar.gz
+    dest: "{{ jenkins_dest_dir }}"
+    remote_src: yes
+
+
+- name: Разрешаем пользователю работать с Docker
+  become: yes
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+#Добавляем пользователя jenkins в группу docker
+- name: Добавляем пользователя jenkins в группу docker
+  become: yes
+  user:
+    name: jenkins
+    groups: docker
+    append: yes
+
+#Перезапускаем Jenkins, чтобы он подхватил группу
+- name: Перезапускаем Jenkins (если уже установлен), чтобы применить группу docker
+  become: yes
+  systemd:
+    name: jenkins
+    state: restarted
+  ignore_errors: yes
+
+- name: Копируем Dockerfile
+  become: yes
+  copy:
+    src: Dockerfile
+    dest: "{{ jenkins_dest_dir }}/Dockerfile"
+
+- name: Собираем кастомный Jenkins-образ
+  become: yes
+  shell: docker build -t {{ jenkins_custom_image }} {{ jenkins_dest_dir }}
+
+- name: Удаляем старый Jenkins контейнер (если есть)
+  become: yes
+  shell: docker rm -f jenkins || true
+  ignore_errors: yes
+
+- name: Разворачиваем systemd unit для Jenkins
+  become: yes
+  template:
+    src: jenkins.service.j2
+    dest: /etc/systemd/system/jenkins.service
+    mode: '0644'
+
+- name: Перезагружаем systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: Запускаем Jenkins-контейнер через systemd
+  become: yes
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes

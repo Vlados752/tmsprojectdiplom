@@ -1,0 +1,7 @@
+jenkins_source_dir: /home/{{ ansible_user }}
+jenkins_dest_dir: /home/{{ ansible_user }}/jenkins
+jenkins_custom_image: myjenkins:custom
+docker_group_gid: 988
+jenkins_port_http: 8080
+jenkins_port_agent: 50000
+ansible_user: vlad
