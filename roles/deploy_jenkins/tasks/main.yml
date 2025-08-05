@@ -22,8 +22,8 @@
 
       #- name: Скачать архив Jenkins
       #get_url:
-      # url: "https://github.com/vladyurik/Final-project-TMS-school/releases/download/v1.0.0/jenkins-setup.tar.gz"
-      #dest: /tmp/jenkins-setup.tar.gz
+      # url: "https://github.com/Vlados752/tmsprojectdiplom/releases/download/v1.0.0/jenkines.tar.gz"
+      #dest: /tmp/jenkines.tar.gz
 
 - name: Распаковать Jenkins
   unarchive:
