@@ -28,6 +28,7 @@
 |------------|-------------|
 | Автоматизация и Jenkins | [tmsprojectdiplom](https://github.com/Vlados752/tmsprojectdiplom/tree/main/roles) |
 | Исходники и пайплайн | [app_tms](https://github.com/Vlados752/app_tms/tree/main) |
+| Скачать готовый Jenkins со всеми настройками | [Jenkins](https://drive.google.com/file/d/1YPulxr_Xo4aC_XqBqA2Zd1Ri0GFtyWgU/view?usp=sharing) |
 
 ---
 
